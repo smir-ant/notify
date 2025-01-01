@@ -1,0 +1,206 @@
+/* 
+   :root
+   - Définition des variables CSS (Custom Properties) pour la configuration globale
+   - Permet de modifier facilement les couleurs, le flou, etc. à un seul endroit
+*/
+:root {
+    /** Couleurs de fond **/
+    --n-error-bgd: rgb(255, 99, 71);    /* Fond pour les notifications d'erreur */
+    --n-success-bgd: rgb(50, 205, 50);  /* Fond pour les notifications de succès */
+    --n-warning-bgd: rgb(255, 215, 0);  /* Fond pour les notifications d'avertissement */
+    --n-default-bgd: rgb(68, 68, 68);   /* Fond pour les notifications par défaut */
+
+    /** Couleurs générales **/
+    --n-inside: #fafbfe;                           /* Couleur du texte à l'intérieur des notifications */
+    --n-close-button-bgd: rgba(0, 0, 0, 0.2);       /* Couleur de fond du bouton "Fermer" */
+    --n-close-button-hover-bgd: rgba(0, 0, 0, 0.3); /* Couleur de fond du bouton "Fermer" au survol */
+
+    /** Effet de flou **/
+    --n-blur: blur(5px);
+
+    /** Bordures **/
+    --n-border: var(--n-inside); /* Couleur de la bordure (facultatif, non utilisé ici) */
+}
+
+/* ===========================================================================
+   ANIMATIONS
+   ===========================================================================
+   - Les keyframes définissent les différentes étapes d'une animation
+*/
+
+/* 
+   reveal-notification
+   - Animation d'apparition (fade in + translation depuis le haut)
+*/
+@keyframes reveal-notification {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 
+   hide-notification
+   - Animation de disparition (fade out + translation vers le haut)
+*/
+@keyframes hide-notification {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* 
+   scroll-text
+   - Animation de défilement horizontal pour le texte (marquee-like)
+*/
+@keyframes scroll-text {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* 
+   #notification-container
+   - Conteneur principal qui va accueillir toutes les notifications
+   - Positionné en haut, au centre horizontal
+*/
+#notification-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000; /* Au-dessus des autres éléments pour être visible */
+}
+
+/*
+   .notification
+   - Style générique de chaque notification : position, couleurs, animation, etc.
+   - On utilise un backdrop-filter pour appliquer le flou en arrière-plan.
+*/
+.notification {
+    backdrop-filter: var(--n-blur);
+    -webkit-backdrop-filter: var(--n-blur); /* Compatibilité Safari */
+    color: var(--n-inside);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    animation: reveal-notification 0.3s ease-out forwards; /* Animation d'arrivée */
+    opacity: 0;
+    width: 500px;
+    box-sizing: border-box;
+    overflow: hidden; /* Évite le débordement de contenu */
+}
+
+/*
+   .notification.remove
+   - Classe ajoutée lorsqu'on veut fermer la notification
+   - Lance l'animation de disparition
+*/
+.notification.remove {
+    animation: hide-notification 0.3s ease-in forwards;
+}
+
+/* 
+   .notification i
+   - L'icône Font Awesome qui s'affiche au début de la notification
+*/
+.notification i {
+    margin-right: 5px;
+}
+
+/*
+   .notif-container
+   - Conteneur qui regroupe le texte de la notification
+   - Permet de gérer le défilement horizontal du texte
+*/
+.notif-container {
+    display: inline-block;
+    margin-left: 10px;
+    flex-grow: 1;
+    overflow: hidden;
+    white-space: nowrap; /* Empêche le retour à la ligne */
+}
+
+/* 
+   .notif
+   - L'élément de texte lui-même
+*/
+.notif {
+    display: inline-block;
+}
+
+/*
+   .notif.scrolling
+   - Lance l'animation de défilement horizontal
+   - Applied si le texte dépasse la largeur du conteneur
+*/
+.notif.scrolling {
+    animation: scroll-text 10s linear infinite;
+}
+
+/* ===========================================================================
+   SPÉCIFIQUE À CHAQUE TYPE DE NOTIFICATION
+   ===========================================================================
+   - Définition des couleurs de fond selon le type (error, success, warning, default)
+*/
+
+/* Notification d'erreur */
+.notification.error {
+    background-color: var(--n-error-bgd);
+}
+
+/* Notification de succès */
+.notification.success {
+    background-color: var(--n-success-bgd);
+}
+
+/* Notification d'avertissement (danger) */
+.notification.warning {
+    background-color: var(--n-warning-bgd);
+}
+
+/* Notification par défaut */
+.notification.default {
+    background-color: var(--n-default-bgd);
+}
+
+/* ===========================================================================
+   BOUTON DE FERMETURE
+   ===========================================================================
+   - Apparaît si le délai d'affichage est défini à 0 (notification persistante)
+*/
+.close-button {
+    background-color: var(--n-close-button-bgd);
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-left: 10px;
+    margin-top: unset;
+    margin-bottom: unset;
+    border: none;
+    color: var(--n-inside);
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+/* 
+   .close-button:hover
+   - Modification de la couleur de fond au survol pour un retour visuel
+*/
+.close-button:hover {
+    background-color: var(--n-close-button-hover-bgd);
+}

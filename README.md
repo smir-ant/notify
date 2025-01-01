@@ -1,4 +1,4 @@
-# NotifyF
+# Notify
 
 Notify is a lightweight JavaScript script that allows you to display customizable notifications on your website. Each notification can be set to automatically disappear after a defined delay or remain persistent, giving the user the option to manually close it. A dedicated CSS file makes it easy to integrate and customize the look and feel.
 
